@@ -39,19 +39,21 @@ func main() {
 	q.Add("password", fmt.Sprintf("%x", h.Sum(nil)))
 	u.RawQuery = q.Encode()
 
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
-	if err != nil {
-		log.Fatalf("error while creating request %v", err)
-	}
-
 	c := http.Client{
 		Timeout: time.Second * 20,
 	}
+
 	for {
+		req, err := http.NewRequest(http.MethodGet, u.String(), nil)
+		if err != nil {
+			log.Fatalf("error while creating request %v", err)
+		}
+
 		resp, err := c.Do(req)
 		if err != nil {
 			log.Fatalf("error while quering dynu %v", err)
 		}
+		
 		if resp.StatusCode != 200 {
 			log.Fatalf("error while updating ip address status code [%v]", resp.StatusCode)
 		}
